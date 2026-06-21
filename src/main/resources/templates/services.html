@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: page(~{::title}, ~{::#content}, 'services')}">
+<head>
+    <title>Services Catalog | Vehi-Serve Admin</title>
+</head>
+<body>
+    <div id="content">
+        <!-- Catalog Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">View and manage all available maintenance services and costs.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openModal('addServiceModal')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                New Service
+            </button>
+        </div>
+
+        <!-- Catalog Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="card" th:each="s : ${services}" style="margin-bottom: 0; display: flex; flex-direction: column;">
+                <div class="card-header" style="background-color: #f8fafc; border-bottom: 1px solid var(--border);">
+                    <div class="card-title" th:text="${s.serviceName}">Standard Service</div>
+                    <div style="font-family: 'Outfit'; font-size: 1.15rem; font-weight: 700; color: var(--success);">₹<span th:text="${#numbers.formatDecimal(s.baseCost, 1, 2)}">59.99</span></div>
+                </div>
+                <div style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column; background-color: white;">
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5; margin-bottom: 1.5rem; flex: 1;" th:text="${s.description}">Includes multi-point inspection, synthetic oil change, fluid top-ups and tire rotation.</p>
+                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end; border-top: 1px solid #f1f5f9; padding-top: 1rem;" class="no-print">
+                        <button class="btn btn-secondary btn-sm" th:onclick="'editService(' + ${s.serviceId} + ')'">Edit</button>
+                        <button class="btn btn-secondary btn-sm" style="color: var(--danger);" th:onclick="'deleteService(' + ${s.serviceId} + ')'">Delete</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div th:if="${#lists.isEmpty(services)}" style="grid-column: 1 / -1; background-color: white; border: 1px dashed var(--border); border-radius: var(--radius-md); padding: 4rem; text-align: center;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="1.5" style="margin-bottom: 1rem;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <h3 style="font-family:'Outfit'; font-size: 1.1rem; font-weight:600; color:var(--text-primary); margin-bottom:0.5rem;">No Services Configured</h3>
+                <p style="color:var(--text-secondary); font-size:0.875rem; margin-bottom:1.5rem;">Create catalog items to assign them to incoming service bookings.</p>
+                <button class="btn btn-primary" onclick="openModal('addServiceModal')">Configure First Service</button>
+            </div>
+        </div>
+
+        <!-- Add Service Modal -->
+        <div id="addServiceModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Create Catalog Entry</h2>
+                    <button class="modal-close" onclick="closeModal('addServiceModal')">&times;</button>
+                </div>
+                <form id="addServiceForm" onsubmit="submitAddService(event)">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label" for="add_name">Service Name</label>
+                            <input class="form-control" type="text" id="add_name" name="serviceName" required placeholder="e.g. Synthetic Oil Change">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="add_desc">Description / Scope of Work</label>
+                            <textarea class="form-control" id="add_desc" name="description" rows="3" required placeholder="Describe what this service covers..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="add_cost">Base Cost (₹)</label>
+                            <input class="form-control" type="number" id="add_cost" name="baseCost" step="0.01" min="0" required placeholder="e.g. 79.99">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('addServiceModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Service</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Service Modal -->
+        <div id="editServiceModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Edit Service Catalog Entry</h2>
+                    <button class="modal-close" onclick="closeModal('editServiceModal')">&times;</button>
+                </div>
+                <form id="editServiceForm" onsubmit="submitEditService(event)">
+                    <input type="hidden" id="edit_id" name="serviceId">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label" for="edit_name">Service Name</label>
+                            <input class="form-control" type="text" id="edit_name" name="serviceName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit_desc">Description / Scope of Work</label>
+                            <textarea class="form-control" id="edit_desc" name="description" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="edit_cost">Base Cost (₹)</label>
+                            <input class="form-control" type="number" id="edit_cost" name="baseCost" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('editServiceModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Service</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Custom JS integrations for Services -->
+        <script>
+            async function submitAddService(event) {
+                event.preventDefault();
+                const data = serializeForm('addServiceForm');
+                try {
+                    await apiRequest('/api/service/create', 'POST', data);
+                    showToast('Service catalog entry created successfully!');
+                    closeModal('addServiceModal');
+                    setTimeout(() => location.reload(), 800);
+                } catch(e) {
+                    showToast('Creation failed: ' + e.message, 'danger');
+                }
+            }
+
+            async function editService(id) {
+                try {
+                    const service = await apiRequest(`/api/service/${id}`, 'GET');
+                    document.getElementById('edit_id').value = service.serviceId;
+                    document.getElementById('edit_name').value = service.serviceName;
+                    document.getElementById('edit_desc').value = service.description;
+                    document.getElementById('edit_cost').value = service.baseCost;
+                    openModal('editServiceModal');
+                } catch(e) {
+                    showToast('Could not load service catalog data: ' + e.message, 'danger');
+                }
+            }
+
+            async function submitEditService(event) {
+                event.preventDefault();
+                const id = document.getElementById('edit_id').value;
+                const data = serializeForm('editServiceForm');
+                try {
+                    await apiRequest(`/api/service/update/${id}`, 'PUT', data);
+                    showToast('Service catalog updated successfully!');
+                    closeModal('editServiceModal');
+                    setTimeout(() => location.reload(), 800);
+                } catch(e) {
+                    showToast('Update failed: ' + e.message, 'danger');
+                }
+            }
+
+            async function deleteService(id) {
+                if (confirm('Are you sure you want to delete this service entry? Existing bookings may depend on it.')) {
+                    try {
+                        const result = await apiRequest(`/api/service/delete/${id}`, 'DELETE');
+                        showToast(result || 'Service catalog item deleted.');
+                        setTimeout(() => location.reload(), 800);
+                    } catch(e) {
+                        showToast('Deletion failed: ' + e.message, 'danger');
+                    }
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>

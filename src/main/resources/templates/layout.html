@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, content, activePage)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">Vehicle Service Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <a th:href="@{/dashboard}" class="sidebar-brand">
+                <!-- SVG Logo -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 13H5V19H19V13Z" stroke="url(#logo_grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M19 9V13H5V9C5 7.9 5.9 7 7 7H17C18.1 7 19 7.9 19 9Z" stroke="url(#logo_grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="7.5" cy="19.5" r="2.5" fill="url(#logo_grad)"/>
+                    <circle cx="16.5" cy="19.5" r="2.5" fill="url(#logo_grad)"/>
+                    <path d="M2 13H5" stroke="url(#logo_grad)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M19 13H22" stroke="url(#logo_grad)" stroke-width="2" stroke-linecap="round"/>
+                    <defs>
+                        <linearGradient id="logo_grad" x1="2" y1="7" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#6366f1"/>
+                            <stop offset="1" stop-color="#0ea5e9"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>VEHI-SERVE</span>
+            </a>
+            
+            <ul class="sidebar-menu">
+                <li>
+                    <a th:href="@{/dashboard}" class="menu-item" th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                        <!-- Dashboard Icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/customers}" class="menu-item" th:classappend="${activePage == 'customers' ? 'active' : ''}">
+                        <!-- Customers Icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        Customers
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/vehicles}" class="menu-item" th:classappend="${activePage == 'vehicles' ? 'active' : ''}">
+                        <!-- Vehicles Icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                        Vehicles
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/services}" class="menu-item" th:classappend="${activePage == 'services' ? 'active' : ''}">
+                        <!-- Services Icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                        Services Catalog
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/bookings}" class="menu-item" th:classappend="${activePage == 'bookings' ? 'active' : ''}">
+                        <!-- Bookings Icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        Bookings
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/history}" class="menu-item" th:classappend="${activePage == 'history' ? 'active' : ''}">
+                        <!-- History Icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        Service History
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/invoices}" class="menu-item" th:classappend="${activePage == 'invoices' ? 'active' : ''}">
+                        <!-- Invoices Icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12M6 8h12M6 13l8.5 8M6 13h3a4 4 0 0 0 0-8"/></svg>
+                        Invoices
+                    </a>
+                </li>
+                <li style="margin-top: auto; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 1rem;">
+                    <a th:href="@{/logout}" class="menu-item" style="color: #f87171;">
+                        <!-- Logout Icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-title" th:switch="${activePage}">
+                    <span th:case="'dashboard'">Dashboard</span>
+                    <span th:case="'customers'">Customers</span>
+                    <span th:case="'vehicles'">Vehicles</span>
+                    <span th:case="'services'">Services Catalog</span>
+                    <span th:case="'bookings'">Bookings</span>
+                    <span th:case="'history'">Service History</span>
+                    <span th:case="'invoices'">Invoices</span>
+                    <span th:case="*">Vehicle Service Admin</span>
+                </div>
+                <div class="header-user">
+                    <div class="avatar">AD</div>
+                    <span style="font-weight: 500; font-size: 0.9rem; color: var(--text-primary);">Administrator</span>
+                </div>
+            </header>
+
+            <!-- Main Page Content Body -->
+            <div class="content-body">
+                <div th:replace="${content}">
+                    <!-- Page content goes here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script th:src="@{/js/app.js}"></script>
+</body>
+</html>

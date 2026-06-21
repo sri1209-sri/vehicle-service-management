@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vehiserve-app-service
+  labels:
+    app: vehiserve
+spec:
+  ports:
+    - port: 8086
+      targetPort: 8086
+      nodePort: 30086
+  selector:
+    app: vehiserve
+    tier: frontend
+  type: NodePort

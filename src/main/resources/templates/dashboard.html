@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layout :: page(~{::title}, ~{::#content}, 'dashboard')}">
+<head>
+    <title>Dashboard | Vehi-Serve Admin</title>
+</head>
+<body>
+    <div id="content">
+        <!-- KPI Cards Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Total Customers</h3>
+                    <p th:text="${totalCustomers}">12</p>
+                </div>
+                <div class="stat-icon primary">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Vehicles Serviced</h3>
+                    <p th:text="${totalVehicles}">8</p>
+                </div>
+                <div class="stat-icon secondary">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="2" ry="2"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Active Bookings</h3>
+                    <p th:text="${totalBookings}">3</p>
+                </div>
+                <div class="stat-icon warning">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>Total Revenue</h3>
+                    <p>₹<span th:text="${#numbers.formatDecimal(totalRevenue, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                </div>
+                <div class="stat-icon success">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12M6 8h12M6 13l8.5 8M6 13h3a4 4 0 0 0 0-8"/></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section (Dynamic Revenue Trends Chart) -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+            <div class="card" style="margin-bottom: 0;">
+                <div class="card-header">
+                    <div class="card-title">Monthly Revenue Trends</div>
+                </div>
+                <div style="padding: 1rem; height: 300px; background-color: white; position: relative;">
+                    <canvas id="revenueChart" style="width: 100%; height: 100%;"></canvas>
+                </div>
+            </div>
+
+            <!-- Side Card Info -->
+            <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column;">
+                <div class="card-header">
+                    <div class="card-title">Quick Actions</div>
+                </div>
+                <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 0.85rem; flex: 1; justify-content: center; background-color: white;">
+                    <a th:href="@{/bookings}" class="btn btn-primary" style="justify-content: center;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                        New Booking
+                    </a>
+                    <a th:href="@{/customers}" class="btn btn-secondary" style="justify-content: center;">
+                        Add New Customer
+                    </a>
+                    <a th:href="@{/invoices}" class="btn btn-secondary" style="justify-content: center;">
+                        View Billing Overview
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Bookings Table -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Recent Service Bookings</div>
+                <a th:href="@{/bookings}" class="btn btn-secondary btn-sm">Manage All Bookings</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Vehicle Number</th>
+                            <th>Service Category</th>
+                            <th>Problem Details</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="b : ${recentBookings}">
+                            <td th:text="${b.bookingId}">1</td>
+                            <td th:text="${b.vehicle.vehicleNumber}">MH-12-AB-1234</td>
+                            <td th:text="${b.service.serviceName}">Standard Service</td>
+                            <td th:text="${b.problemDescription}">Regular checkup</td>
+                            <td>
+                                <span class="badge" 
+                                      th:classappend="${b.status == 'BOOKED' ? 'badge-info' : (b.status == 'IN_PROGRESS' ? 'badge-warning' : (b.status == 'COMPLETED' ? 'badge-success' : 'badge-danger'))}" 
+                                      th:text="${b.status}">BOOKED</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(recentBookings)}">
+                            <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 2rem;">No bookings found. Click "New Booking" to get started!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Chart.js Integration -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', async () => {
+                try {
+                    // Fetch all invoices to compute real monthly revenue trends
+                    const invoices = await apiRequest('/api/invoice/all', 'GET');
+                    
+                    // Generate last 6 months labels and initialize data
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const last6Months = [];
+                    
+                    const today = new Date();
+                    for (let i = 5; i >= 0; i--) {
+                        const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+                        last6Months.push({
+                            label: `${monthNames[d.getMonth()]} ${d.getFullYear().toString().substr(-2)}`,
+                            monthIndex: d.getMonth(),
+                            year: d.getFullYear(),
+                            total: 0.0
+                        });
+                    }
+                    
+                    // Group and sum invoice amounts by month
+                    invoices.forEach(inv => {
+                        if (inv.invoiceDate) {
+                            const invDate = new Date(inv.invoiceDate);
+                            const invMonth = invDate.getMonth();
+                            const invYear = invDate.getFullYear();
+                            
+                            const match = last6Months.find(m => m.monthIndex === invMonth && m.year === invYear);
+                            if (match) {
+                                match.total += (inv.amount || 0.0);
+                            }
+                        }
+                    });
+                    
+                    const labels = last6Months.map(m => m.label);
+                    const dataPoints = last6Months.map(m => m.total);
+                    
+                    // Render Chart.js line chart
+                    const ctx = document.getElementById('revenueChart').getContext('2d');
+                    
+                    // Create gradient for the line fill
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                    gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+                    gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+                    
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Monthly Revenue (₹)',
+                                data: dataPoints,
+                                borderColor: '#6366f1',
+                                borderWidth: 3,
+                                backgroundColor: gradient,
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: '#6366f1',
+                                pointBorderColor: '#ffffff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return ` Revenue: ₹${context.parsed.y.toFixed(2)}`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    grid: {
+                                        color: '#f1f5f9'
+                                    },
+                                    ticks: {
+                                        color: '#64748b',
+                                        callback: function(value) {
+                                            return '₹' + value;
+                                        }
+                                    },
+                                    border: {
+                                        dash: [5, 5]
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        color: '#64748b'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } catch(e) {
+                    console.error('Could not render trend chart:', e);
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>

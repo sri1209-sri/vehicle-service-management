@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  labels:
+    app: vehiserve
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: vehiserve
+    tier: database
+  type: ClusterIP

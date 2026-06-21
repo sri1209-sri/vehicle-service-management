@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehiserve-app-deployment
+  labels:
+    app: vehiserve
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vehiserve
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: vehiserve
+        tier: frontend
+    spec:
+      containers:
+        - name: vehiserve-app
+          image: vehiserve-app:latest
+          imagePullPolicy: IfNotPresent # Allows Minikube to use local builds directly
+          ports:
+            - containerPort: 8086
+              name: app-port
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: vehiserve-config
+                  key: SPRING_DATASOURCE_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: vehiserve-config
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: vehiserve-secret
+                  key: SPRING_DATASOURCE_PASSWORD
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: vehiserve-config
+                  key: SERVER_PORT
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: "update"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: vehiserve-secret
+                  key: JWT_SECRET
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8086
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8086
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            failureThreshold: 6
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "1"

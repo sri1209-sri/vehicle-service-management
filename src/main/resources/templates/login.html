@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Vehi-Serve Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .login-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: cardAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes cardAppear {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .login-brand {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .login-brand span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            font-size: 0.875rem;
+            color: var(--sidebar-text);
+            margin-bottom: 2rem;
+        }
+
+        .form-control {
+            background-color: rgba(30, 41, 59, 0.5);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            padding: 0.75rem 1rem;
+        }
+
+        .form-control::placeholder {
+            color: #64748b;
+        }
+
+        .form-control:focus {
+            background-color: rgba(30, 41, 59, 0.8);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        }
+
+        .form-label {
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 100%;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            border-radius: var(--radius-sm);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+            transition: var(--transition);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+        }
+
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            color: #f87171;
+        }
+
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #34d399;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-brand">
+            <!-- SVG Logo -->
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 13H5V19H19V13Z" stroke="url(#logo_grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 9V13H5V9C5 7.9 5.9 7 7 7H17C18.1 7 19 7.9 19 9Z" stroke="url(#logo_grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="7.5" cy="19.5" r="2.5" fill="url(#logo_grad)"/>
+                <circle cx="16.5" cy="19.5" r="2.5" fill="url(#logo_grad)"/>
+                <path d="M2 13H5" stroke="url(#logo_grad)" stroke-width="2" stroke-linecap="round"/>
+                <path d="M19 13H22" stroke="url(#logo_grad)" stroke-width="2" stroke-linecap="round"/>
+                <defs>
+                    <linearGradient id="logo_grad" x1="2" y1="7" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#6366f1"/>
+                        <stop offset="1" stop-color="#0ea5e9"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span>VEHI-SERVE</span>
+        </div>
+        <p class="login-subtitle">Administrative Control Panel</p>
+
+        <!-- Error Notifications -->
+        <div th:if="${param.error}" class="alert alert-danger">
+            <span>⚠</span>
+            <div>Invalid username or password. Please try again.</div>
+        </div>
+        
+        <!-- Logout Notifications -->
+        <div th:if="${param.logout}" class="alert alert-success">
+            <span>✓</span>
+            <div>You have been successfully logged out.</div>
+        </div>
+
+        <form th:action="@{/login}" method="POST">
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <input class="form-control" type="text" id="username" name="username" required placeholder="e.g. admin" autocomplete="username" autofocus>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 1.75rem;">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-control" type="password" id="password" name="password" required placeholder="••••••••" autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+    </div>
+</body>
+</html>
