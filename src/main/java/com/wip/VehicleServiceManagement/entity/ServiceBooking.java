@@ -1,6 +1,12 @@
 package com.wip.VehicleServiceManagement.entity;
 
 import jakarta.persistence.*;
+/**
+ * ServiceBooking.
+ *
+ * @author Devadarshini M
+ * @author Sridevi Srikumar
+ */
 
 @Entity
 @Table(name = "service_booking")
@@ -14,9 +20,13 @@ public class ServiceBooking {
     @JoinColumn(name = "vehicle_id")
     private Vehicle vehicle;
 
-    @ManyToOne
-    @JoinColumn(name = "service_id")
-    private ServiceEntity service;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "booking_services",
+        joinColumns = @JoinColumn(name = "booking_id"),
+        inverseJoinColumns = @JoinColumn(name = "service_id")
+    )
+    private java.util.List<ServiceEntity> services = new java.util.ArrayList<>();
 
     private String status;
 
@@ -40,12 +50,30 @@ public class ServiceBooking {
         this.vehicle = vehicle;
     }
 
+    public java.util.List<ServiceEntity> getServices() {
+        return services;
+    }
+
+    public void setServices(java.util.List<ServiceEntity> services) {
+        this.services = services;
+    }
+
     public ServiceEntity getService() {
-        return service;
+        if (services != null && !services.isEmpty()) {
+            return services.get(0);
+        }
+        return null;
     }
 
     public void setService(ServiceEntity service) {
-        this.service = service;
+        if (this.services == null) {
+            this.services = new java.util.ArrayList<>();
+        } else {
+            this.services.clear();
+        }
+        if (service != null) {
+            this.services.add(service);
+        }
     }
 
     public String getStatus() {

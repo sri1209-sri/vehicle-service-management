@@ -2,6 +2,11 @@ package com.wip.VehicleServiceManagement.service;
 
 import com.wip.VehicleServiceManagement.entity.Admin;
 import java.util.List;
+/**
+ * AdminService.
+ *
+ * @author Sridevi Srikumar
+ */
 
 public interface AdminService {
 

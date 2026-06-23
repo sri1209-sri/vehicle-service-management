@@ -3,6 +3,11 @@ package com.wip.VehicleServiceManagement.dto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+/**
+ * ServiceDTO.
+ *
+ * @author Devadarshini M
+ */
 
 public class ServiceDTO {
 

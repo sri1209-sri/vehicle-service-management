@@ -1,6 +1,12 @@
 package com.wip.VehicleServiceManagement.entity;
 
 import jakarta.persistence.*;
+/**
+ * Admin.
+ *
+ * @author Devadarshini M
+ * @author Sridevi Srikumar
+ */
 
 @Entity
 @Table(name = "admin")

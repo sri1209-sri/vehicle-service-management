@@ -1,3 +1,4 @@
+<!-- Author: Sridevi Srikumar -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
       th:replace="~{layout :: page(~{::title}, ~{::#content}, 'bookings')}">
@@ -32,7 +33,10 @@
                             <td th:text="${b.bookingId}">1</td>
                             <td style="font-weight: 600;" th:text="${b.vehicle.brand} + ' ' + ${b.vehicle.model} + ' (' + ${b.vehicle.vehicleNumber} + ')'">Toyota Corolla (MH-12-AB-1234)</td>
                             <td th:text="${b.vehicle.customer.name}">John Doe</td>
-                            <td th:text="${b.service.serviceName} + ' (₹' + ${b.service.baseCost} + ')'">Standard Service (₹50)</td>
+                            <td>
+                                <span th:each="s, iter : ${b.services}" th:text="${s.serviceName} + (${iter.last} ? '' : ', ')"></span>
+                                (&#8377;<span th:text="${#aggregates.sum(b.services.![baseCost])}"></span>)
+                            </td>
                             <td th:text="${b.problemDescription}">Regular Tuneup</td>
                             <td>
                                 <span class="badge" 
@@ -42,7 +46,7 @@
                             <td class="no-print">
                                 <div style="display: flex; gap: 0.4rem;">
                                     <button th:if="${b.status == 'BOOKED'}" class="btn btn-secondary btn-sm" style="color: var(--warning);" th:onclick="'updateBookingStatus(' + ${b.bookingId} + ', \'IN_PROGRESS\')'">Start</button>
-                                    <button th:if="${b.status == 'IN_PROGRESS'}" class="btn btn-secondary btn-sm" style="color: var(--success);" th:onclick="'openCompleteModal(' + ${b.bookingId} + ', ' + ${b.service.baseCost} + ')'">Complete</button>
+                                    <button th:if="${b.status == 'IN_PROGRESS'}" class="btn btn-secondary btn-sm" style="color: var(--success);" th:onclick="'openCompleteModal(' + ${b.bookingId} + ')'">Complete</button>
                                     <button class="btn btn-secondary btn-sm" style="color: var(--primary);" th:onclick="'editBooking(' + ${b.bookingId} + ')'">Edit</button>
                                     <button class="btn btn-secondary btn-sm" style="color: var(--danger);" th:onclick="'deleteBooking(' + ${b.bookingId} + ')'">Delete</button>
                                 </div>
@@ -73,11 +77,13 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="add_service">Service Type</label>
-                            <select class="form-control" id="add_service" name="serviceId" required>
-                                <option value="" disabled selected>Select Service...</option>
-                                <option th:each="s : ${services}" th:value="${s.serviceId}" th:text="${s.serviceName} + ' (₹' + ${s.baseCost} + ')'"></option>
-                            </select>
+                            <label class="form-label">Select Services</label>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 120px; overflow-y: auto; background: rgba(30, 41, 59, 0.5); padding: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm);">
+                                <div th:each="s : ${services}" style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" th:id="'service_' + ${s.serviceId}" name="serviceIds" th:value="${s.serviceId}" style="width: auto;">
+                                    <label th:for="'service_' + ${s.serviceId}" th:text="${s.serviceName} + ' (&#8377;' + ${s.baseCost} + ')'" style="margin: 0; cursor: pointer; color: #ffffff;"></label>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="add_problem">Problem / Symptoms Description</label>
@@ -109,10 +115,13 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="edit_service">Service Type</label>
-                            <select class="form-control" id="edit_service" name="serviceId" required>
-                                <option th:each="s : ${services}" th:value="${s.serviceId}" th:text="${s.serviceName} + ' (₹' + ${s.baseCost} + ')'"></option>
-                            </select>
+                            <label class="form-label">Select Services</label>
+                            <div style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 120px; overflow-y: auto; background: rgba(30, 41, 59, 0.5); padding: 0.75rem; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm);">
+                                <div th:each="s : ${services}" style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" th:id="'edit_service_' + ${s.serviceId}" name="serviceIds" th:value="${s.serviceId}" style="width: auto;">
+                                    <label th:for="'edit_service_' + ${s.serviceId}" th:text="${s.serviceName} + ' (&#8377;' + ${s.baseCost} + ')'" style="margin: 0; cursor: pointer; color: #ffffff;"></label>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="edit_problem">Problem / Symptoms Description</label>
@@ -151,7 +160,7 @@
                             <input class="form-control" type="date" id="complete_date" name="serviceDate" required>
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="complete_cost">Total Charged Cost (₹)</label>
+                            <label class="form-label" for="complete_cost">Total Charged Cost (&#8377;)</label>
                             <input class="form-control" type="number" id="complete_cost" name="totalCost" step="0.01" min="0" required>
                         </div>
                         <div class="form-group">
@@ -169,18 +178,27 @@
 
         <!-- Custom JS integrations for Bookings -->
         <script>
-            // Set default date to today
-            document.getElementById('complete_date').value = new Date().toISOString().split('T')[0];
+            // Set default date to today and prevent future dates
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('complete_date').value = todayStr;
+            document.getElementById('complete_date').max = todayStr;
 
             async function submitAddBooking(event) {
                 event.preventDefault();
                 const vehicleId = document.getElementById('add_vehicle').value;
-                const serviceId = document.getElementById('add_service').value;
                 const problemDescription = document.getElementById('add_problem').value;
+                
+                const checkedBoxes = document.querySelectorAll('#addBookingForm input[name="serviceIds"]:checked');
+                const serviceIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+
+                if (serviceIds.length === 0) {
+                    showToast('At least one service must be selected', 'warning');
+                    return;
+                }
                 
                 const payload = {
                     vehicleId: parseInt(vehicleId),
-                    serviceId: parseInt(serviceId),
+                    serviceIds: serviceIds,
                     problemDescription: problemDescription
                 };
 
@@ -211,7 +229,17 @@
                     const booking = await apiRequest(`/api/booking/${id}`, 'GET');
                     document.getElementById('edit_id').value = booking.bookingId;
                     document.getElementById('edit_vehicle').value = booking.vehicleId;
-                    document.getElementById('edit_service').value = booking.serviceId;
+                    
+                    const checkboxes = document.querySelectorAll('#editBookingForm input[name="serviceIds"]');
+                    checkboxes.forEach(cb => cb.checked = false);
+
+                    if (booking.serviceIds) {
+                        booking.serviceIds.forEach(sid => {
+                            const cb = document.getElementById('edit_service_' + sid);
+                            if (cb) cb.checked = true;
+                        });
+                    }
+
                     document.getElementById('edit_problem').value = booking.problemDescription;
                     document.getElementById('edit_status').value = booking.status;
                     openModal('editBookingModal');
@@ -224,14 +252,21 @@
                 event.preventDefault();
                 const id = document.getElementById('edit_id').value;
                 const vehicleId = document.getElementById('edit_vehicle').value;
-                const serviceId = document.getElementById('edit_service').value;
                 const problemDescription = document.getElementById('edit_problem').value;
                 const status = document.getElementById('edit_status').value;
+
+                const checkedBoxes = document.querySelectorAll('#editBookingForm input[name="serviceIds"]:checked');
+                const serviceIds = Array.from(checkedBoxes).map(cb => parseInt(cb.value));
+
+                if (serviceIds.length === 0) {
+                    showToast('At least one service must be selected', 'warning');
+                    return;
+                }
 
                 const payload = {
                     bookingId: parseInt(id),
                     vehicleId: parseInt(vehicleId),
-                    serviceId: parseInt(serviceId),
+                    serviceIds: serviceIds,
                     problemDescription: problemDescription,
                     status: status
                 };
@@ -258,10 +293,19 @@
                 }
             }
 
-            function openCompleteModal(bookingId, baseCost) {
-                document.getElementById('complete_booking_id').value = bookingId;
-                document.getElementById('complete_cost').value = baseCost;
-                openModal('completeServiceModal');
+            async function openCompleteModal(bookingId) {
+                try {
+                    const booking = await apiRequest(`/api/booking/${bookingId}`, 'GET');
+                    const allServices = await apiRequest('/api/service/all', 'GET');
+                    const bookingServices = allServices.filter(s => booking.serviceIds.includes(s.serviceId));
+                    const totalCost = bookingServices.reduce((sum, s) => sum + s.baseCost, 0);
+
+                    document.getElementById('complete_booking_id').value = bookingId;
+                    document.getElementById('complete_cost').value = totalCost;
+                    openModal('completeServiceModal');
+                } catch(e) {
+                    showToast('Failed to load cost details: ' + e.message, 'danger');
+                }
             }
 
             async function submitCompleteService(event) {

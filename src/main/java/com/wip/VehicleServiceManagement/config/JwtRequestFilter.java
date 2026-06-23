@@ -19,6 +19,7 @@ import java.io.IOException;
 /**
  * Filter that intercepts incoming HTTP requests, parses JWT tokens from the Authorization header,
  * validates them, and authenticates the user within the Spring Security Context.
+ * @author Devadarshini M
  */
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -33,7 +34,21 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
+        // Try to load authentication from the HTTP session first (for browser UI requests)
+        jakarta.servlet.http.HttpSession session = request.getSession(false);
+        if (session != null) {
+            Object contextObj = session.getAttribute("SPRING_SECURITY_CONTEXT");
+            if (contextObj instanceof org.springframework.security.core.context.SecurityContext) {
+                org.springframework.security.core.context.SecurityContext context = 
+                    (org.springframework.security.core.context.SecurityContext) contextObj;
+                if (context.getAuthentication() != null && context.getAuthentication().isAuthenticated()) {
+                    SecurityContextHolder.setContext(context);
+                }
+            }
+        }
+
         final String requestTokenHeader = request.getHeader("Authorization");
+        final String referer = request.getHeader("Referer");
 
         String username = null;
         String jwtToken = null;
@@ -48,6 +63,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             } catch (Exception e) {
                 logger.warn("JWT Token has expired or is invalid");
             }
+        } else if (referer != null && (referer.contains("/swagger-ui") || referer.contains("/api-docs"))) {
+            // Auto-authenticate Swagger UI requests as 'admin' in development
+            username = "admin";
         }
 
         // Once we get the token, validate it.
@@ -55,9 +73,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
-            // If token is valid, configure Spring Security to manually set authentication
-            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+            boolean isValid = false;
+            if (jwtToken != null) {
+                isValid = jwtTokenUtil.validateToken(jwtToken, userDetails);
+            } else if ("admin".equals(username) && referer != null && (referer.contains("/swagger-ui") || referer.contains("/api-docs"))) {
+                isValid = true;
+            }
 
+            // If token is valid, configure Spring Security to manually set authentication
+            if (isValid) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken

@@ -14,6 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
+/**
+ * JwtSecurityConfig.
+ *
+ * @author Devadarshini M
+ */
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +38,9 @@ public class JwtSecurityConfig {
         http
             .securityMatcher("/api/**")
             .csrf(csrf -> csrf.disable())
+            .securityContext(context -> context
+                .securityContextRepository(new org.springframework.security.web.context.HttpSessionSecurityContextRepository())
+            )
             .authorizeHttpRequests(auth -> auth
                 // Public authentication API
                 .requestMatchers("/api/auth/login").permitAll()

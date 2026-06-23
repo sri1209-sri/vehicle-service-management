@@ -10,6 +10,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+/**
+ * AdminUserDetailsService.
+ *
+ * @author Sridevi Srikumar
+ */
 
 @Service
 public class AdminUserDetailsService implements UserDetailsService {
@@ -19,11 +24,14 @@ public class AdminUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Admin admin = adminRepository.findByUsername(username);
-        if (admin == null) {
+        java.util.List<Admin> admins = adminRepository.findAll().stream()
+                .filter(a -> username.equalsIgnoreCase(a.getUsername()))
+                .collect(java.util.stream.Collectors.toList());
+        if (admins.isEmpty()) {
             throw new UsernameNotFoundException("Admin not found with username: " + username);
         }
 
+        Admin admin = admins.get(0);
         return new User(
             admin.getUsername(),
             admin.getPassword(),

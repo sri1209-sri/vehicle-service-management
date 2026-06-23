@@ -7,6 +7,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+/**
+ * AdminServiceImpl.
+ *
+ * @author Sridevi Srikumar
+ */
 
 @Service
 public class AdminServiceImpl implements AdminService {

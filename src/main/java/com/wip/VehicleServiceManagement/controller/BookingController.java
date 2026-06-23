@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * REST Controller for managing service bookings.
+ * @author Devadarshini M
  */
 @RestController
 @RequestMapping("/api/booking")

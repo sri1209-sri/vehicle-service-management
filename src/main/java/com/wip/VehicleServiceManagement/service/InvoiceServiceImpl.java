@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+/**
+ * InvoiceServiceImpl.
+ *
+ * @author Sridevi Srikumar
+ */
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -116,8 +121,11 @@ public class InvoiceServiceImpl implements InvoiceService {
             dto.setServiceRemarks(invoice.getHistory().getRemarks());
             
             if (invoice.getHistory().getBooking() != null) {
-                if (invoice.getHistory().getBooking().getService() != null) {
-                    dto.setServiceName(invoice.getHistory().getBooking().getService().getServiceName());
+                if (invoice.getHistory().getBooking().getServices() != null && !invoice.getHistory().getBooking().getServices().isEmpty()) {
+                    String serviceNames = invoice.getHistory().getBooking().getServices().stream()
+                            .map(com.wip.VehicleServiceManagement.entity.ServiceEntity::getServiceName)
+                            .collect(java.util.stream.Collectors.joining(", "));
+                    dto.setServiceName(serviceNames);
                 }
                 if (invoice.getHistory().getBooking().getVehicle() != null) {
                     com.wip.VehicleServiceManagement.entity.Vehicle vehicle = invoice.getHistory().getBooking().getVehicle();

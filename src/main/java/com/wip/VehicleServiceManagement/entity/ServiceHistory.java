@@ -2,6 +2,12 @@ package com.wip.VehicleServiceManagement.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+/**
+ * ServiceHistory.
+ *
+ * @author Devadarshini M
+ * @author Sridevi Srikumar
+ */
 
 @Entity
 @Table(name = "service_history")

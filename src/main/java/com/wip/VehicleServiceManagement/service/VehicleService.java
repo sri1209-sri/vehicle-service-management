@@ -2,6 +2,11 @@ package com.wip.VehicleServiceManagement.service;
 
 import com.wip.VehicleServiceManagement.dto.VehicleDTO;
 import java.util.List;
+/**
+ * VehicleService.
+ *
+ * @author Sridevi Srikumar
+ */
 
 public interface VehicleService {
 

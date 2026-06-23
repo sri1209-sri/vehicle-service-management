@@ -9,6 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+/**
+ * CustomerDeletionIntegrationTest.
+ *
+ * @author Devadarshini M
+ * @author Sridevi Srikumar
+ */
 
 @SpringBootTest
 public class CustomerDeletionIntegrationTest {

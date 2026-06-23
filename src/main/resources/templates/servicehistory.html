@@ -1,3 +1,4 @@
+<!-- Author: Sridevi Srikumar -->
  <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
       th:replace="~{layout :: page(~{::title}, ~{::#content}, 'history')}">
@@ -30,7 +31,7 @@
                             <td th:text="${h.booking.vehicle.vehicleNumber}">MH-12-AB-1234</td>
                             <td th:text="${h.booking.vehicle.brand} + ' ' + ${h.booking.vehicle.model}">Toyota Corolla</td>
                             <td th:text="${h.remarks}">Changed spark plugs and synthetic oil</td>
-                            <td style="font-weight: 600; color: var(--text-primary);">₹<span th:text="${#numbers.formatDecimal(h.totalCost, 1, 2)}">79.99</span></td>
+                            <td style="font-weight: 600; color: var(--text-primary);">&#8377;<span th:text="${#numbers.formatDecimal(h.totalCost, 1, 2)}">79.99</span></td>
                             <td class="no-print">
                                 <div style="display: flex; gap: 0.5rem;">
                                     <button class="btn btn-primary btn-sm" th:onclick="'generateInvoice(' + ${h.historyId} + ', ' + ${h.totalCost} + ')'">Generate Invoice</button>

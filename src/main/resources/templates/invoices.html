@@ -1,3 +1,4 @@
+<!-- Author: Devadarshini M -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
       th:replace="~{layout :: page(~{::title}, ~{::#content}, 'invoices')}">
@@ -58,7 +59,7 @@
                             <td th:text="${i.invoiceDate}">2026-06-18</td>
                             <td style="font-weight: 500;" th:text="${i.history.booking.vehicle.customer.name}">John Doe</td>
                             <td th:text="${i.history.booking.vehicle.vehicleNumber}">MH-12-AB-1234</td>
-                            <td style="font-weight: 600;" th:text="'₹' + ${#numbers.formatDecimal(i.amount, 1, 2)}">₹79.99</td>
+                            <td style="font-weight: 600;" th:text="'&#8377;' + ${#numbers.formatDecimal(i.amount, 1, 2)}">&#8377;79.99</td>
                             <td>
                                 <span class="badge" 
                                       th:classappend="${i.paymentStatus == 'PAID' ? 'badge-success' : 'badge-warning'}" 
@@ -178,9 +179,9 @@
                     
                     document.getElementById('pdf_service_name').innerText = invoice.serviceName || '';
                     document.getElementById('pdf_service_remarks').innerText = invoice.serviceRemarks ? `Remarks: ${invoice.serviceRemarks}` : '';
-                    document.getElementById('pdf_service_cost').innerText = `₹${(invoice.amount || 0).toFixed(2)}`;
+                    document.getElementById('pdf_service_cost').innerText = `\u20B9${(invoice.amount || 0).toFixed(2)}`;
                     
-                    document.getElementById('pdf_total_amount').innerText = `₹${(invoice.amount || 0).toFixed(2)}`;
+                    document.getElementById('pdf_total_amount').innerText = `\u20B9${(invoice.amount || 0).toFixed(2)}`;
                     
                     const statusBadge = document.getElementById('pdf_payment_status');
                     statusBadge.innerText = invoice.paymentStatus;

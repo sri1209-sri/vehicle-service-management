@@ -20,6 +20,11 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+/**
+ * Component.
+ *
+ * @author Devadarshini M
+ */
 
 @ExtendWith(MockitoExtension.class)
 public class BookingServiceImplTest {

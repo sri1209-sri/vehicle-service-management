@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+/**
+ * GlobalExceptionHandler.
+ *
+ * @author Sridevi Srikumar
+ */
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

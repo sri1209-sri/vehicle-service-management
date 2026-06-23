@@ -1,4 +1,9 @@
 package com.wip.VehicleServiceManagement.util;
+/**
+ * ResponseUtil.
+ *
+ * @author Sridevi Srikumar
+ */
 
 public class ResponseUtil {
 

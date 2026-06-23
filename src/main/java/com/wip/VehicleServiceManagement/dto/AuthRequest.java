@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Data Transfer Object representing a login request.
+ * @author Devadarshini M
  */
 @Schema(description = "DTO representing the user login credentials")
 public class AuthRequest {

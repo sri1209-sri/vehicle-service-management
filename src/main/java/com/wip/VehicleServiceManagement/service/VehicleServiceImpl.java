@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+/**
+ * VehicleServiceImpl.
+ *
+ * @author Sridevi Srikumar
+ */
 
 @Service
 public class VehicleServiceImpl implements VehicleService {

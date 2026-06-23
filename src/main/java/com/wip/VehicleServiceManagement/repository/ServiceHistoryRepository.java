@@ -4,6 +4,11 @@ import com.wip.VehicleServiceManagement.entity.ServiceHistory;
 import com.wip.VehicleServiceManagement.entity.ServiceBooking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+/**
+ * ServiceHistoryRepository.
+ *
+ * @author Sridevi Srikumar
+ */
 
 @Repository
 public interface ServiceHistoryRepository extends JpaRepository<ServiceHistory, Long> {

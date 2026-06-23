@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Data Transfer Object representing a Customer.
+ * @author Devadarshini M
  */
 @Schema(description = "Customer data details")
 public class CustomerDTO {

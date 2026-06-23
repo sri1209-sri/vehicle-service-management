@@ -7,6 +7,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+/**
+ * VehicleServiceManagementApplication.
+ *
+ * @author Devadarshini M
+ * @author Sridevi Srikumar
+ */
 
 @SpringBootApplication
 public class VehicleServiceManagementApplication {
@@ -19,8 +25,10 @@ public class VehicleServiceManagementApplication {
 	@Bean
 	public CommandLineRunner initData(AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
 		return args -> {
-			Admin admin = adminRepository.findByUsername("admin");
-			if (admin == null) {
+			java.util.List<Admin> admins = adminRepository.findAll().stream()
+					.filter(a -> "admin".equalsIgnoreCase(a.getUsername()))
+					.collect(java.util.stream.Collectors.toList());
+			if (admins.isEmpty()) {
 				Admin defaultAdmin = new Admin();
 				defaultAdmin.setUsername("admin");
 				defaultAdmin.setEmail("admin@vehiserve.com");
@@ -28,12 +36,11 @@ public class VehicleServiceManagementApplication {
 				adminRepository.save(defaultAdmin);
 				System.out.println("Default Admin seeded successfully!");
 			} else {
-				String pwd = admin.getPassword();
-				if (pwd == null || !pwd.startsWith("$2")) {
+				for (Admin admin : admins) {
 					admin.setPassword(passwordEncoder.encode("admin123"));
 					adminRepository.save(admin);
-					System.out.println("Existing Admin password updated to BCrypt encoded format!");
 				}
+				System.out.println("Existing Admin passwords reset to 'admin123' successfully!");
 			}
 		};
 	}

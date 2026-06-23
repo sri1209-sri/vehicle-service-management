@@ -3,6 +3,11 @@ package com.wip.VehicleServiceManagement.service;
 import com.wip.VehicleServiceManagement.dto.ServiceHistoryDTO;
 
 import java.util.List;
+/**
+ * ServiceHistoryService.
+ *
+ * @author Sridevi Srikumar
+ */
 
 public interface ServiceHistoryService {
 

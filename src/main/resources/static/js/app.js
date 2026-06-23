@@ -1,3 +1,4 @@
+// Author: Devadarshini M
 /**
  * Vehicle Service Management Common JS Utilities
  */
@@ -14,9 +15,9 @@ function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     
-    let icon = '✓';
-    if (type === 'danger') icon = '✕';
-    if (type === 'warning') icon = '⚠';
+    let icon = '\u2713';
+    if (type === 'danger') icon = '\u2717';
+    if (type === 'warning') icon = '\u26A0';
 
     toast.innerHTML = `
         <span style="font-weight:bold; font-size:1.2rem;">${icon}</span>
@@ -63,8 +64,23 @@ async function apiRequest(url, method = 'GET', data = null) {
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
-            const errorMsg = await response.text();
-            throw new Error(errorMsg || `HTTP error! Status: ${response.status}`);
+            const errorText = await response.text();
+            let parsedError = null;
+            try {
+                parsedError = JSON.parse(errorText);
+            } catch (e) {
+                // Not JSON
+            }
+            
+            if (parsedError) {
+                if (parsedError.errors && typeof parsedError.errors === 'object') {
+                    const messages = Object.values(parsedError.errors).join(', ');
+                    throw new Error(messages || parsedError.message || 'Validation failed');
+                } else if (parsedError.message) {
+                    throw new Error(parsedError.message);
+                }
+            }
+            throw new Error(errorText || `HTTP error! Status: ${response.status}`);
         }
         
         // Some endpoints return a plain string instead of JSON

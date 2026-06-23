@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * REST Controller for managing catalog service types.
+ * @author Devadarshini M
  */
 @RestController
 @RequestMapping("/api/service")

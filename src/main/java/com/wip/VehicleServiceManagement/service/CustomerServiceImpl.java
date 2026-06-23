@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+/**
+ * CustomerServiceImpl.
+ *
+ * @author Sridevi Srikumar
+ */
 
 @Service
 public class CustomerServiceImpl implements CustomerService {

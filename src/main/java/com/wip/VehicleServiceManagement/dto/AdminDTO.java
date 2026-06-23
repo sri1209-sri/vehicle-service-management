@@ -1,4 +1,9 @@
 package com.wip.VehicleServiceManagement.dto;
+/**
+ * AdminDTO.
+ *
+ * @author Devadarshini M
+ */
 
 public class AdminDTO {
 

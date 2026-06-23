@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * REST Controller for managing Customers.
+ * @author Devadarshini M
  */
 @RestController
 @RequestMapping("/api/customer")

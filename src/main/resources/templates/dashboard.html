@@ -1,3 +1,4 @@
+<!-- Author: Devadarshini M -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" 
       th:replace="~{layout :: page(~{::title}, ~{::#content}, 'dashboard')}">
@@ -41,7 +42,7 @@
             <div class="stat-card">
                 <div class="stat-info">
                     <h3>Total Revenue</h3>
-                    <p>₹<span th:text="${#numbers.formatDecimal(totalRevenue, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                    <p>&#8377;<span th:text="${#numbers.formatDecimal(totalRevenue, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
                 </div>
                 <div class="stat-icon success">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12M6 8h12M6 13l8.5 8M6 13h3a4 4 0 0 0 0-8"/></svg>
@@ -101,7 +102,10 @@
                         <tr th:each="b : ${recentBookings}">
                             <td th:text="${b.bookingId}">1</td>
                             <td th:text="${b.vehicle.vehicleNumber}">MH-12-AB-1234</td>
-                            <td th:text="${b.service.serviceName}">Standard Service</td>
+                            <td>
+                                <span th:each="s, iter : ${b.services}" th:text="${s.serviceName} + (${iter.last} ? '' : ', ')"></span>
+                                <span th:if="${#lists.isEmpty(b.services)}" th:text="${b.service != null ? b.service.serviceName : 'No Service'}"></span>
+                            </td>
                             <td th:text="${b.problemDescription}">Regular checkup</td>
                             <td>
                                 <span class="badge" 
@@ -170,7 +174,7 @@
                         data: {
                             labels: labels,
                             datasets: [{
-                                label: 'Monthly Revenue (₹)',
+                                label: 'Monthly Revenue (\u20B9)',
                                 data: dataPoints,
                                 borderColor: '#6366f1',
                                 borderWidth: 3,
@@ -194,7 +198,7 @@
                                 tooltip: {
                                     callbacks: {
                                         label: function(context) {
-                                            return ` Revenue: ₹${context.parsed.y.toFixed(2)}`;
+                                            return ` Revenue: \u20B9${context.parsed.y.toFixed(2)}`;
                                         }
                                     }
                                 }
@@ -207,7 +211,7 @@
                                     ticks: {
                                         color: '#64748b',
                                         callback: function(value) {
-                                            return '₹' + value;
+                                            return '\u20B9' + value;
                                         }
                                     },
                                     border: {

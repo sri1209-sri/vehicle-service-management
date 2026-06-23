@@ -18,6 +18,8 @@ import java.util.function.Function;
 
 /**
  * Utility class for generating and validating JSON Web Tokens (JWT).
+ *
+ * @author Sridevi Srikumar
  */
 @Component
 public class JwtTokenUtil implements Serializable {

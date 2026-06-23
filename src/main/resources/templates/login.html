@@ -1,3 +1,4 @@
+<!-- Author: Sridevi Srikumar -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -155,13 +156,13 @@
 
         <!-- Error Notifications -->
         <div th:if="${param.error}" class="alert alert-danger">
-            <span>⚠</span>
+            <span>&#9888;</span>
             <div>Invalid username or password. Please try again.</div>
         </div>
         
         <!-- Logout Notifications -->
         <div th:if="${param.logout}" class="alert alert-success">
-            <span>✓</span>
+            <span>&#10003;</span>
             <div>You have been successfully logged out.</div>
         </div>
 

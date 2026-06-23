@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * REST Controller for managing service completion logs and vehicle servicing history.
+ * @author Devadarshini M
  */
 @RestController
 @RequestMapping("/api/service-history")

@@ -1,10 +1,17 @@
 package com.wip.VehicleServiceManagement.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+/**
+ * Vehicle.
+ *
+ * @author Devadarshini M
+ * @author Sridevi Srikumar
+ */
 
 @Entity
 @Table(name = "vehicle")
@@ -14,16 +21,20 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long vehicleId;
 
+    @Schema(description = "Vehicle brand / manufacturer", example = "Toyota")
     @NotBlank(message = "Brand / Make is required")
     private String brand;
 
+    @Schema(description = "Vehicle model", example = "Corolla")
     @NotBlank(message = "Model is required")
     private String model;
 
+    @Schema(description = "Vehicle license plate number", example = "MH-12-AB-1234")
     @Column(unique = true, nullable = false)
     @NotBlank(message = "Vehicle plate number is required")
     private String vehicleNumber;
 
+    @Schema(description = "Year of manufacture", example = "2021")
     @NotNull(message = "Year of manufacture is required")
     @Min(value = 1900, message = "Year must be 1900 or later")
     @Max(value = 2030, message = "Year must be 2030 or earlier")

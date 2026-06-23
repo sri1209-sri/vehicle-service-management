@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+/**
+ * BookingServiceImpl.
+ *
+ * @author Sridevi Srikumar
+ */
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -31,13 +36,24 @@ public class BookingServiceImpl implements BookingService {
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
-        ServiceEntity service = serviceRepository.findById(dto.getServiceId())
-                .orElseThrow(() -> new RuntimeException("Service not found"));
+        java.util.List<ServiceEntity> services;
+        if (dto.getServiceIds() != null && !dto.getServiceIds().isEmpty()) {
+            services = serviceRepository.findAllById(dto.getServiceIds());
+            if (services.size() != dto.getServiceIds().size()) {
+                throw new RuntimeException("One or more services not found");
+            }
+        } else if (dto.getServiceId() != null) {
+            ServiceEntity service = serviceRepository.findById(dto.getServiceId())
+                    .orElseThrow(() -> new RuntimeException("Service not found"));
+            services = java.util.Collections.singletonList(service);
+        } else {
+            throw new RuntimeException("At least one service must be selected");
+        }
 
         ServiceBooking booking = new ServiceBooking();
 
         booking.setVehicle(vehicle);
-        booking.setService(service);
+        booking.setServices(services);
         booking.setProblemDescription(dto.getProblemDescription());
         booking.setStatus("BOOKED");
 
@@ -72,11 +88,22 @@ public class BookingServiceImpl implements BookingService {
         Vehicle vehicle = vehicleRepository.findById(dto.getVehicleId())
                 .orElseThrow(() -> new RuntimeException("Vehicle not found"));
 
-        ServiceEntity service = serviceRepository.findById(dto.getServiceId())
-                .orElseThrow(() -> new RuntimeException("Service not found"));
+        java.util.List<ServiceEntity> services;
+        if (dto.getServiceIds() != null && !dto.getServiceIds().isEmpty()) {
+            services = serviceRepository.findAllById(dto.getServiceIds());
+            if (services.size() != dto.getServiceIds().size()) {
+                throw new RuntimeException("One or more services not found");
+            }
+        } else if (dto.getServiceId() != null) {
+            ServiceEntity service = serviceRepository.findById(dto.getServiceId())
+                    .orElseThrow(() -> new RuntimeException("Service not found"));
+            services = java.util.Collections.singletonList(service);
+        } else {
+            throw new RuntimeException("At least one service must be selected");
+        }
 
         booking.setVehicle(vehicle);
-        booking.setService(service);
+        booking.setServices(services);
         booking.setProblemDescription(dto.getProblemDescription());
         booking.setStatus(dto.getStatus());
 
@@ -96,7 +123,14 @@ public class BookingServiceImpl implements BookingService {
 
         dto.setBookingId(booking.getBookingId());
         dto.setVehicleId(booking.getVehicle().getVehicleId());
-        dto.setServiceId(booking.getService().getServiceId());
+        
+        if (booking.getServices() != null && !booking.getServices().isEmpty()) {
+            dto.setServiceId(booking.getServices().get(0).getServiceId());
+            dto.setServiceIds(booking.getServices().stream()
+                    .map(ServiceEntity::getServiceId)
+                    .collect(Collectors.toList()));
+        }
+        
         dto.setProblemDescription(booking.getProblemDescription());
         dto.setStatus(booking.getStatus());
 

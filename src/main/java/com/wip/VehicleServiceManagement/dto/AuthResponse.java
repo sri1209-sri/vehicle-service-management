@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * Data Transfer Object representing the authentication response containing the JWT.
+ * @author Devadarshini M
  */
 @Schema(description = "DTO representing the response returned after a successful authentication")
 public class AuthResponse {

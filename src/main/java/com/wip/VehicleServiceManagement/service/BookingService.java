@@ -3,6 +3,11 @@ package com.wip.VehicleServiceManagement.service;
 import com.wip.VehicleServiceManagement.dto.BookingDTO;
 
 import java.util.List;
+/**
+ * BookingService.
+ *
+ * @author Sridevi Srikumar
+ */
 
 public interface BookingService {
 

@@ -3,13 +3,20 @@ package com.wip.VehicleServiceManagement.dto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
+/**
+ * ServiceHistoryDTO.
+ *
+ * @author Devadarshini M
+ */
 
 public class ServiceHistoryDTO {
 
     private Long historyId;
 
     @NotNull(message = "Service date is required")
+    @PastOrPresent(message = "Service date cannot be in the future")
     private LocalDate serviceDate;
 
     private String serviceStatus;

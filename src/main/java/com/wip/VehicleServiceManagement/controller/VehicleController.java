@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * REST Controller for managing vehicle registrations.
+ * @author Devadarshini M
  */
 @RestController
 @RequestMapping("/api/vehicle")

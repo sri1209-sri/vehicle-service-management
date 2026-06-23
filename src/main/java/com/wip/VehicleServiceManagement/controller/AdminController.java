@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * Controller responsible for managing Administrator accounts.
+ * @author Devadarshini M
  */
 @RestController
 @RequestMapping("/api/admin")

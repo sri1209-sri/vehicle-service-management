@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller responsible for handling user authentication requests and issuing JWTs.
+ * @author Devadarshini M
  */
 @RestController
 @RequestMapping("/api/auth")
